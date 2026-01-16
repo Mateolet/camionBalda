@@ -23,6 +23,7 @@
                     <th>ID</th>
                     <th>Marca</th>
                     <th>Modelo</th>
+                    <th>Imagenes</th>
                     <th>Año</th>
                     <th>Precio</th>
                     <th>Estado</th>
@@ -35,6 +36,13 @@
                     <td class="fw-bold">#{{ $camion->id }}</td>
                     <td>{{ $camion->marca->nombre ?? '-' }}</td>
                     <td>{{ $camion->modelo->nombre ?? '-' }}</td>
+                    <td>
+                        @forelse($camion->imagenes->take(3) as $imagen)
+                            <img src="{{ asset('storage/' . $imagen->url) }}" alt="" width="48" height="36" class="me-1 rounded" style="object-fit: cover;">
+                        @empty
+                            <span class="text-muted">Sin imagenes</span>
+                        @endforelse
+                    </td>
                     <td>{{ $camion->anio }}</td>
                     <td>${{ number_format($camion->precio, 0, ',', '.') }}</td>
                     <td>

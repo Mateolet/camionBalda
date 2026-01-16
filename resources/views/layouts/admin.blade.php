@@ -67,6 +67,10 @@
                 <i class="bi bi-truck-front"></i> Camiones
             </a>
 
+            <a href="{{ route('admin.marcas.index') }}">
+                <i class="bi bi-bookmark"></i> Marcas
+            </a>
+
             <a href="{{ route('admin.categorias.index') }}">
                 <i class="bi bi-tags"></i> Categorías
             </a>

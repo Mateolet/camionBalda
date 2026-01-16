@@ -7,12 +7,13 @@ use Illuminate\Http\Request;
 use App\Models\Camiones;
 use App\Models\Marca;
 use App\Models\Categoria;
+use Illuminate\Support\Facades\Storage;
 
 class CamionesController extends Controller
 {
     public function index()
     {
-        $camiones = Camiones::with(['marca','categoria'])
+        $camiones = Camiones::with(['marca','categoria','imagenes'])
             ->orderByDesc('id')
             ->get();
 
@@ -56,12 +57,31 @@ public function store(Request $request)
         'imagen_principal'   => 'nullable|string|max:255',
         'descripcion'        => 'nullable|string',
         'estado'             => 'required|string|max:50',
+        'imagenes'           => 'nullable|array',
+        'imagenes.*'         => 'image|mimes:jpg,jpeg,png,webp|max:4096',
     ]);
 
     // fallback seguro
     $data['modelo_id'] = $data['modelo_id'] ?? 1;
 
-    Camiones::create($data);
+    $camion = Camiones::create($data);
+
+    if ($request->hasFile('imagenes')) {
+        $posicion = 1;
+
+        foreach ($request->file('imagenes') as $imagen) {
+            if (!$imagen->isValid()) {
+                continue;
+            }
+
+            $path = $imagen->store('camiones', 'public');
+
+            $camion->imagenes()->create([
+                'url' => $path,
+                'posicion' => $posicion++,
+            ]);
+        }
+    }
 
     return redirect()
         ->route('admin.camiones.index')
@@ -70,6 +90,8 @@ public function store(Request $request)
 
     public function edit(Camiones $camion)
     {
+        $camion->load('imagenes');
+
         return view('admin.camiones.edit', [
             'camion'     => $camion,
             'marcas'     => Marca::orderBy('nombre')->get(),
@@ -104,11 +126,30 @@ public function update(Request $request, Camiones $camion)
         'imagen_principal'   => 'nullable|string|max:255',
         'descripcion'        => 'nullable|string',
         'estado'             => 'required|string|max:50',
+        'imagenes'           => 'nullable|array',
+        'imagenes.*'         => 'image|mimes:jpg,jpeg,png,webp|max:4096',
     ]);
 
     $data['modelo_id'] = $data['modelo_id'] ?? 1;
 
     $camion->update($data);
+
+    if ($request->hasFile('imagenes')) {
+        $posicion = ($camion->imagenes()->max('posicion') ?? 0) + 1;
+
+        foreach ($request->file('imagenes') as $imagen) {
+            if (!$imagen->isValid()) {
+                continue;
+            }
+
+            $path = $imagen->store('camiones', 'public');
+
+            $camion->imagenes()->create([
+                'url' => $path,
+                'posicion' => $posicion++,
+            ]);
+        }
+    }
 
     return redirect()
         ->route('admin.camiones.index')
@@ -119,5 +160,18 @@ public function update(Request $request, Camiones $camion)
     {
         $camion->delete();
         return redirect()->route('admin.camiones.index');
+    }
+
+    public function destroyImagen(Camiones $camion, $imagen)
+    {
+        $imagen = $camion->imagenes()->findOrFail($imagen);
+
+        if (!empty($imagen->url)) {
+            Storage::disk('public')->delete($imagen->url);
+        }
+
+        $imagen->delete();
+
+        return back()->with('success', 'Imagen eliminada correctamente');
     }
 }

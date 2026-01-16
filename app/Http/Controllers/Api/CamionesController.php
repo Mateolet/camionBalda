@@ -13,11 +13,25 @@ class CamionesController extends Controller
      */
     public function index()
     {
-        return Camiones::with([
+        $camiones = Camiones::with([
             'marca:id,nombre',
             'categoria:id,nombre',
+            'imagenes:id,camion_id,url,posicion',
             // 'modelo:id,nombre'
         ])->get();
+
+        return $camiones->map(function ($camion) {
+            $camion->imagenes->transform(function ($imagen) {
+                $imagen->url = asset('storage/' . $imagen->url);
+                return $imagen;
+            });
+
+            $camion->imagen_principal_url = $camion->imagen_principal
+                ? asset('storage/' . $camion->imagen_principal)
+                : null;
+
+            return $camion;
+        });
     }
 
     /**
@@ -65,8 +79,18 @@ class CamionesController extends Controller
         $camion = Camiones::with([
             'marca:id,nombre',
             'categoria:id,nombre',
+            'imagenes:id,camion_id,url,posicion',
             // 'modelo:id,nombre'
         ])->findOrFail($id);
+
+        $camion->imagenes->transform(function ($imagen) {
+            $imagen->url = asset('storage/' . $imagen->url);
+            return $imagen;
+        });
+
+        $camion->imagen_principal_url = $camion->imagen_principal
+            ? asset('storage/' . $camion->imagen_principal)
+            : null;
 
         return $camion;
     }

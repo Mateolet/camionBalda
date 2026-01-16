@@ -84,6 +84,25 @@
 </textarea>
 </div>
 
+<div class="col-md-12">
+    <label class="form-label">Imagenes</label>
+    <input type="file" name="imagenes[]" class="form-control" multiple accept="image/*">
+</div>
+
+@if(!empty($camion) && $camion->imagenes->count())
+<div class="col-md-12">
+    <label class="form-label">Imagenes cargadas</label>
+    <div class="d-flex flex-wrap gap-2">
+        @foreach($camion->imagenes as $imagen)
+            <div class="text-center">
+                <img src="{{ asset('storage/' . $imagen->url) }}" alt="" width="96" height="72" class="rounded d-block" style="object-fit: cover;">
+                <button class="btn btn-sm btn-outline-danger mt-1" type="submit" form="delete-image-{{ $imagen->id }}" onclick="return confirm('Eliminar imagen?')">Eliminar</button>
+            </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
 {{-- ESTADO --}}
 <div class="col-md-3">
     <label class="form-label">Estado</label>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CamionImagen;
 
 class Camiones extends Model
 {
@@ -42,4 +43,9 @@ class Camiones extends Model
         return $this->belongsTo(Categoria::class);
     }
 
+    public function imagenes()
+    {
+        return $this->hasMany(CamionImagen::class, 'camion_id')
+            ->orderBy('posicion');
+    }
 }
