@@ -59,6 +59,7 @@ public function store(Request $request)
         'estado'             => 'required|string|max:50',
         'imagenes'           => 'nullable|array',
         'imagenes.*'         => 'image|mimes:jpg,jpeg,png,webp|max:4096',
+        'imagen_principal_index' => 'nullable|integer|min:0',
     ]);
 
     // fallback seguro
@@ -68,6 +69,8 @@ public function store(Request $request)
 
     if ($request->hasFile('imagenes')) {
         $posicion = 1;
+        $primeraImagen = null;
+        $paths = [];
 
         foreach ($request->file('imagenes') as $imagen) {
             if (!$imagen->isValid()) {
@@ -75,10 +78,22 @@ public function store(Request $request)
             }
 
             $path = $imagen->store('camiones', 'public');
+            $primeraImagen = $primeraImagen ?? $path;
+            $paths[] = $path;
 
             $camion->imagenes()->create([
                 'url' => $path,
                 'posicion' => $posicion++,
+            ]);
+        }
+
+        if ($request->filled('imagen_principal_index') && isset($paths[$request->integer('imagen_principal_index')])) {
+            $camion->update([
+                'imagen_principal' => $paths[$request->integer('imagen_principal_index')],
+            ]);
+        } elseif (empty($data['imagen_principal']) && !empty($primeraImagen)) {
+            $camion->update([
+                'imagen_principal' => $primeraImagen,
             ]);
         }
     }
@@ -128,6 +143,7 @@ public function update(Request $request, Camiones $camion)
         'estado'             => 'required|string|max:50',
         'imagenes'           => 'nullable|array',
         'imagenes.*'         => 'image|mimes:jpg,jpeg,png,webp|max:4096',
+        'imagen_principal_index' => 'nullable|integer|min:0',
     ]);
 
     $data['modelo_id'] = $data['modelo_id'] ?? 1;
@@ -136,6 +152,8 @@ public function update(Request $request, Camiones $camion)
 
     if ($request->hasFile('imagenes')) {
         $posicion = ($camion->imagenes()->max('posicion') ?? 0) + 1;
+        $primeraImagen = null;
+        $paths = [];
 
         foreach ($request->file('imagenes') as $imagen) {
             if (!$imagen->isValid()) {
@@ -143,10 +161,22 @@ public function update(Request $request, Camiones $camion)
             }
 
             $path = $imagen->store('camiones', 'public');
+            $primeraImagen = $primeraImagen ?? $path;
+            $paths[] = $path;
 
             $camion->imagenes()->create([
                 'url' => $path,
                 'posicion' => $posicion++,
+            ]);
+        }
+
+        if ($request->filled('imagen_principal_index') && isset($paths[$request->integer('imagen_principal_index')])) {
+            $camion->update([
+                'imagen_principal' => $paths[$request->integer('imagen_principal_index')],
+            ]);
+        } elseif (empty($data['imagen_principal']) && empty($camion->imagen_principal) && !empty($primeraImagen)) {
+            $camion->update([
+                'imagen_principal' => $primeraImagen,
             ]);
         }
     }
@@ -171,6 +201,11 @@ public function update(Request $request, Camiones $camion)
         }
 
         $imagen->delete();
+
+        if ($camion->imagen_principal === $imagen->url) {
+            $nuevaPrincipal = $camion->imagenes()->orderBy('posicion')->value('url');
+            $camion->update(['imagen_principal' => $nuevaPrincipal]);
+        }
 
         return back()->with('success', 'Imagen eliminada correctamente');
     }

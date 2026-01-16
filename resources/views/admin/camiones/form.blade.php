@@ -87,15 +87,25 @@
 <div class="col-md-12">
     <label class="form-label">Imagenes</label>
     <input type="file" name="imagenes[]" class="form-control" multiple accept="image/*">
+    <input type="hidden" name="imagen_principal_index" id="imagen-principal-index">
+    <div class="mt-2 d-none" id="imagenes-nuevas-wrap">
+        <div class="small text-muted mb-1">Elegi la imagen principal de las nuevas</div>
+        <div class="d-flex flex-wrap gap-2" id="imagenes-nuevas"></div>
+    </div>
 </div>
 
 @if(!empty($camion) && $camion->imagenes->count())
 <div class="col-md-12">
     <label class="form-label">Imagenes cargadas</label>
+    @php($imagenPrincipal = old('imagen_principal', $camion->imagen_principal ?? ''))
     <div class="d-flex flex-wrap gap-2">
         @foreach($camion->imagenes as $imagen)
             <div class="text-center">
                 <img src="{{ asset('storage/' . $imagen->url) }}" alt="" width="96" height="72" class="rounded d-block" style="object-fit: cover;">
+                <div class="form-check mt-1">
+                    <input class="form-check-input" type="radio" name="imagen_principal" id="imagen-principal-{{ $imagen->id }}" value="{{ $imagen->url }}" @checked($imagenPrincipal === $imagen->url)>
+                    <label class="form-check-label small" for="imagen-principal-{{ $imagen->id }}">Principal</label>
+                </div>
                 <button class="btn btn-sm btn-outline-danger mt-1" type="submit" form="delete-image-{{ $imagen->id }}" onclick="return confirm('Eliminar imagen?')">Eliminar</button>
             </div>
         @endforeach
@@ -120,3 +130,68 @@
     <a href="{{ route('admin.camiones.index') }}" class="btn btn-light">Cancelar</a>
     <button class="btn btn-primary">Guardar</button>
 </div>
+
+@push('scripts')
+<script>
+(function () {
+    var input = document.querySelector('input[name="imagenes[]"]');
+    var wrap = document.getElementById('imagenes-nuevas-wrap');
+    var cont = document.getElementById('imagenes-nuevas');
+    var hidden = document.getElementById('imagen-principal-index');
+
+    if (!input || !wrap || !cont || !hidden) return;
+
+    input.addEventListener('change', function () {
+        cont.innerHTML = '';
+        hidden.value = '';
+
+        if (!input.files || !input.files.length) {
+            wrap.classList.add('d-none');
+            return;
+        }
+
+        wrap.classList.remove('d-none');
+
+        Array.prototype.forEach.call(input.files, function (file, idx) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var box = document.createElement('div');
+                box.className = 'text-center';
+
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = '';
+                img.width = 96;
+                img.height = 72;
+                img.className = 'rounded d-block';
+                img.style.objectFit = 'cover';
+
+                var check = document.createElement('div');
+                check.className = 'form-check mt-1';
+
+                var radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'imagen_principal_tmp';
+                radio.value = String(idx);
+                radio.className = 'form-check-input';
+                radio.addEventListener('change', function () {
+                    hidden.value = radio.value;
+                });
+
+                var label = document.createElement('label');
+                label.className = 'form-check-label small';
+                label.textContent = 'Principal';
+
+                check.appendChild(radio);
+                check.appendChild(label);
+
+                box.appendChild(img);
+                box.appendChild(check);
+                cont.appendChild(box);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+})();
+</script>
+@endpush
