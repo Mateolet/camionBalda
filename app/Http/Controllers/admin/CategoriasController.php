@@ -9,10 +9,24 @@ use Illuminate\Support\Str;
 
 class CategoriasController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $query = Categoria::orderBy('orden');
+
+        if ($request->filled('q')) {
+            $q = $request->input('q');
+            $query->where(function ($builder) use ($q) {
+                $builder->where('nombre', 'like', '%' . $q . '%')
+                    ->orWhere('slug', 'like', '%' . $q . '%');
+            });
+        }
+
+        if ($request->filled('visible')) {
+            $query->where('visible', (int) $request->input('visible'));
+        }
+
         return view('admin.categorias.index', [
-            'categorias' => Categoria::orderBy('orden')->get()
+            'categorias' => $query->get(),
         ]);
     }
 

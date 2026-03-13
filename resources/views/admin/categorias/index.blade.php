@@ -16,6 +16,22 @@
 </div>
 
 <div class="card">
+    <div class="card-body border-bottom">
+        <div class="row g-2 align-items-end">
+            <div class="col-12 col-md-5">
+                <label class="form-label mb-1">Buscar</label>
+                <input type="text" id="filtro-categorias-texto" class="form-control" placeholder="Nombre o slug">
+            </div>
+            <div class="col-12 col-md-4">
+                <label class="form-label mb-1">Visible</label>
+                <select id="filtro-categorias-visible" class="form-select">
+                    <option value="">Todas</option>
+                    <option value="1">Visible</option>
+                    <option value="0">Oculta</option>
+                </select>
+            </div>
+        </div>
+    </div>
     <div class="card-body p-0">
         <table class="table table-hover align-middle mb-0">
             <thead>
@@ -29,8 +45,8 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($categorias as $categoria)
-                <tr>
+                @forelse($categorias as $categoria)
+                <tr data-nombre="{{ $categoria->nombre ?? '' }}" data-slug="{{ $categoria->slug ?? '' }}" data-visible="{{ $categoria->visible ? '1' : '0' }}">
                     <td class="fw-bold">#{{ $categoria->id }}</td>
                     <td>{{ $categoria->nombre }}</td>
                     <td>
@@ -64,10 +80,51 @@
                         </form>
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        Sin resultados
+                    </td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    (function () {
+        const filtroTexto = document.getElementById('filtro-categorias-texto');
+        const filtroVisible = document.getElementById('filtro-categorias-visible');
+        const filas = Array.from(document.querySelectorAll('tbody tr'));
+
+        function normalize(value) {
+            return (value || '').toString().toLowerCase().trim();
+        }
+
+        function aplicarFiltro() {
+            const q = normalize(filtroTexto.value);
+            const visible = normalize(filtroVisible.value);
+
+            filas.forEach((fila) => {
+                if (!fila.dataset.nombre && !fila.dataset.slug && !fila.dataset.visible) {
+                    return;
+                }
+
+                const nombre = normalize(fila.dataset.nombre);
+                const slug = normalize(fila.dataset.slug);
+                const rowVisible = normalize(fila.dataset.visible);
+
+                const matchTexto = !q || nombre.includes(q) || slug.includes(q);
+                const matchVisible = !visible || rowVisible === visible;
+
+                fila.style.display = matchTexto && matchVisible ? '' : 'none';
+            });
+        }
+
+        filtroTexto.addEventListener('input', aplicarFiltro);
+        filtroVisible.addEventListener('change', aplicarFiltro);
+    })();
+</script>
 
 @endsection

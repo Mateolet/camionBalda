@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CamionesController;
 use App\Http\Controllers\Admin\CategoriasController;
 use App\Http\Controllers\Admin\MarcasController;
+use App\Http\Controllers\Admin\ModelosController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -22,4 +23,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::resource('categorias', CategoriasController::class);
     Route::resource('marcas', MarcasController::class);
+    Route::resource('modelos', ModelosController::class);
 });

@@ -11,14 +11,29 @@ use Illuminate\Support\Facades\Storage;
 
 class CamionesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $camiones = Camiones::with(['marca','categoria','imagenes'])
-            ->orderByDesc('id')
-            ->get();
+        $query = Camiones::with(['marca','categoria','imagenes'])
+            ->orderByDesc('id');
+
+        if ($request->filled('nombre')) {
+            $query->where('nombre', 'like', '%' . $request->input('nombre') . '%');
+        }
+
+        if ($request->filled('marca_id')) {
+            $query->where('marca_id', $request->integer('marca_id'));
+        }
+
+        if ($request->filled('categoria_id')) {
+            $query->where('categoria_id', $request->integer('categoria_id'));
+        }
+
+        $camiones = $query->get();
 
         return view('admin.camiones.index', [
-            'camiones' => $camiones
+            'camiones' => $camiones,
+            'marcas' => Marca::orderBy('nombre')->get(),
+            'categorias' => Categoria::orderBy('nombre')->get(),
         ]);
     }
 

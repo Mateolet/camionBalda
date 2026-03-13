@@ -17,7 +17,7 @@ class CamionesController extends Controller
             'marca:id,nombre',
             'categoria:id,nombre',
             'imagenes:id,camion_id,url,posicion',
-            // 'modelo:id,nombre'
+            'modelo:id,nombre'
         ])->get();
 
         return $camiones->map(function ($camion) {
@@ -42,8 +42,10 @@ class CamionesController extends Controller
         $data = $request->validate([
             'categoria_id'       => 'required|integer',
             'marca_id'           => 'required|integer',
-            // 'modelo_id'          => 'required|integer',
-            'medida'             => 'nullable|string|max:50',
+            'modelo_id'          => 'required|integer',
+            'nombre'             => 'required|string|max:150',
+            'descripcion_corta'  => 'nullable|string|max:255',
+            'medida'             => 'required|string|max:50',
             'anio'               => 'required|integer',
             'precio'             => 'required|numeric',
             'kilometros'         => 'nullable|integer',
@@ -80,7 +82,7 @@ class CamionesController extends Controller
             'marca:id,nombre',
             'categoria:id,nombre',
             'imagenes:id,camion_id,url,posicion',
-            // 'modelo:id,nombre'
+            'modelo:id,nombre'
         ])->findOrFail($id);
 
         $camion->imagenes->transform(function ($imagen) {
@@ -105,8 +107,10 @@ class CamionesController extends Controller
         $data = $request->validate([
             'categoria_id'       => 'sometimes|integer',
             'marca_id'           => 'sometimes|integer',
-            // 'modelo_id'          => 'sometimes|integer',
-            'medida'             => 'nullable|string|max:50',
+            'modelo_id'          => 'sometimes|integer',
+            'nombre'             => 'sometimes|string|max:150',
+            'descripcion_corta'  => 'nullable|string|max:255',
+            'medida'             => 'sometimes|string|max:50',
             'anio'               => 'sometimes|integer',
             'precio'             => 'sometimes|numeric',
             'kilometros'         => 'nullable|integer',

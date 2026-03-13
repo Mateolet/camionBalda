@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\CamionImagen;
+use App\Models\Modelo;
 
 class Camiones extends Model
 {
@@ -11,6 +12,8 @@ class Camiones extends Model
         'categoria_id',
         'marca_id',
         'modelo_id',
+        'nombre',
+        'descripcion_corta',
         'medida',
         'anio',
         'precio',
@@ -28,6 +31,7 @@ class Camiones extends Model
         'distancia_ejes',
         'capacidad_tanque',
         'equipamiento',
+        'vendedor_id',
         'imagen_principal',
         'descripcion',
         'estado',
@@ -41,6 +45,11 @@ class Camiones extends Model
     public function categoria()
     {
         return $this->belongsTo(Categoria::class);
+    }
+
+    public function modelo()
+    {
+        return $this->belongsTo(Modelo::class);
     }
 
     public function imagenes()

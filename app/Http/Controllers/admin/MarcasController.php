@@ -9,10 +9,20 @@ use Illuminate\Support\Str;
 
 class MarcasController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $query = Marca::orderBy('nombre');
+
+        if ($request->filled('q')) {
+            $q = $request->input('q');
+            $query->where(function ($builder) use ($q) {
+                $builder->where('nombre', 'like', '%' . $q . '%')
+                    ->orWhere('slug', 'like', '%' . $q . '%');
+            });
+        }
+
         return view('admin.marcas.index', [
-            'marcas' => Marca::orderBy('nombre')->get()
+            'marcas' => $query->get(),
         ]);
     }
 

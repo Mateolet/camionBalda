@@ -1,17 +1,17 @@
 @extends('layouts.admin')
 
-@section('title', 'Marcas')
+@section('title', 'Modelos')
 
 @section('content')
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h3 class="fw-bold mb-0">Marcas</h3>
-        <small class="text-muted">Gestion de marcas</small>
+        <h3 class="fw-bold mb-0">Modelos</h3>
+        <small class="text-muted">Gestion de modelos</small>
     </div>
 
-    <a href="{{ route('admin.marcas.create') }}" class="btn btn-primary">
-        <i class="bi bi-plus-lg"></i> Nueva marca
+    <a href="{{ route('admin.modelos.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Nuevo modelo
     </a>
 </div>
 
@@ -20,7 +20,7 @@
         <div class="row g-2 align-items-end">
             <div class="col-12 col-md-6">
                 <label class="form-label mb-1">Buscar</label>
-                <input type="text" id="filtro-marcas" class="form-control" placeholder="Nombre o slug">
+                <input type="text" id="filtro-modelos" class="form-control" placeholder="Nombre o slug">
             </div>
         </div>
     </div>
@@ -35,25 +35,25 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($marcas as $marca)
-                    <tr data-nombre="{{ $marca->nombre ?? '' }}" data-slug="{{ $marca->slug ?? '' }}">
-                        <td class="fw-bold">#{{ $marca->id }}</td>
-                        <td>{{ $marca->nombre }}</td>
+                @forelse($modelos as $modelo)
+                    <tr data-nombre="{{ $modelo->nombre ?? '' }}" data-slug="{{ $modelo->slug ?? '' }}">
+                        <td class="fw-bold">#{{ $modelo->id }}</td>
+                        <td>{{ $modelo->nombre }}</td>
                         <td>
                             <span class="badge bg-light text-dark">
-                                {{ $marca->slug }}
+                                {{ $modelo->slug }}
                             </span>
                         </td>
                         <td class="text-end">
-                            <a href="{{ route('admin.marcas.edit', $marca) }}"
+                            <a href="{{ route('admin.modelos.edit', $modelo) }}"
                                class="btn btn-sm btn-outline-primary">
                                 <i class="bi bi-pencil"></i>
                             </a>
 
-                            <form action="{{ route('admin.marcas.destroy', $marca) }}"
+                            <form action="{{ route('admin.modelos.destroy', $modelo) }}"
                                   method="POST"
                                   class="d-inline"
-                                  onsubmit="return confirm('Eliminar esta marca?')">
+                                  onsubmit="return confirm('Eliminar este modelo?')">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-sm btn-outline-danger">
@@ -76,7 +76,7 @@
 
 <script>
     (function () {
-        const filtro = document.getElementById('filtro-marcas');
+        const filtro = document.getElementById('filtro-modelos');
         const filas = Array.from(document.querySelectorAll('tbody tr'));
 
         function normalize(value) {
