@@ -33,7 +33,7 @@
 <div class="col-md-4">
     <label class="form-label">Modelo</label>
     <select name="modelo_id" class="form-select">
-        @foreach($modelos as $mo)
+        @foreach(($modelos ?? collect()) as $mo)
             <option value="{{ $mo->id }}"
                 @selected(old('modelo_id', $camion->modelo_id ?? '') == $mo->id)>
                 {{ $mo->nombre }}
