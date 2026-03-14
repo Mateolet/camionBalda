@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Modelo;
+use App\Models\Marca;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -12,18 +13,21 @@ class ModelosController extends Controller
     public function index()
     {
         return view('admin.modelos.index', [
-            'modelos' => Modelo::orderBy('nombre')->get(),
+            'modelos' => Modelo::with('marca')->orderBy('nombre')->get(),
         ]);
     }
 
     public function create()
     {
-        return view('admin.modelos.create');
+        return view('admin.modelos.create', [
+            'marcas' => Marca::orderBy('nombre')->get(),
+        ]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
+            'marca_id' => 'required|integer',
             'nombre' => 'required|string|max:255',
         ]);
 
@@ -40,12 +44,14 @@ class ModelosController extends Controller
     {
         return view('admin.modelos.edit', [
             'modelo' => $modelo,
+            'marcas' => Marca::orderBy('nombre')->get(),
         ]);
     }
 
     public function update(Request $request, Modelo $modelo)
     {
         $data = $request->validate([
+            'marca_id' => 'required|integer',
             'nombre' => 'required|string|max:255',
         ]);
 

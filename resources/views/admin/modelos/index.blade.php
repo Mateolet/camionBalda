@@ -29,6 +29,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Marca</th>
                     <th>Nombre</th>
                     <th>Slug</th>
                     <th class="text-end"></th>
@@ -38,6 +39,7 @@
                 @forelse($modelos as $modelo)
                     <tr data-nombre="{{ $modelo->nombre ?? '' }}" data-slug="{{ $modelo->slug ?? '' }}">
                         <td class="fw-bold">#{{ $modelo->id }}</td>
+                        <td>{{ $modelo->marca->nombre ?? '-' }}</td>
                         <td>{{ $modelo->nombre }}</td>
                         <td>
                             <span class="badge bg-light text-dark">
