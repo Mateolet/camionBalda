@@ -30,8 +30,29 @@
         @endforeach
     </select>
 </div>
+<div class="col-md-4">
+    <label class="form-label">Modelo</label>
+    <select name="modelo_id" class="form-select">
+        @foreach($modelos as $mo)
+            <option value="{{ $mo->id }}"
+                @selected(old('modelo_id', $camion->modelo_id ?? '') == $mo->id)>
+                {{ $mo->nombre }}
+            </option>
+        @endforeach
+    </select>
+</div>
 
+<div class="col-md-8">
+    <label class="form-label">Nombre</label>
+    <input name="nombre" class="form-control"
+           value="{{ old('nombre', $camion->nombre ?? '') }}">
+</div>
 
+<div class="col-md-12">
+    <label class="form-label">Descripcion corta</label>
+    <input name="descripcion_corta" class="form-control"
+           value="{{ old('descripcion_corta', $camion->descripcion_corta ?? '') }}">
+</div>
 {{-- MEDIDA / AÑO / PRECIO --}}
 <div class="col-md-3">
     <label class="form-label">Medida</label>
@@ -195,3 +216,5 @@
 })();
 </script>
 @endpush
+
+

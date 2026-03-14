@@ -7,13 +7,14 @@ use Illuminate\Http\Request;
 use App\Models\Camiones;
 use App\Models\Marca;
 use App\Models\Categoria;
+use App\Models\Modelo;
 use Illuminate\Support\Facades\Storage;
 
 class CamionesController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Camiones::with(['marca','categoria','imagenes'])
+        $query = Camiones::with(['marca','categoria','modelo','imagenes'])
             ->orderByDesc('id');
 
         if ($request->filled('nombre')) {
@@ -42,6 +43,7 @@ class CamionesController extends Controller
         return view('admin.camiones.create', [
             'marcas'     => Marca::orderBy('nombre')->get(),
             'categorias' => Categoria::orderBy('nombre')->get(),
+            'modelos'    => Modelo::orderBy('nombre')->get(),
         ]);
     }
 
@@ -51,6 +53,8 @@ public function store(Request $request)
         'categoria_id'       => 'required|integer',
         'marca_id'           => 'required|integer',
         'modelo_id'          => 'nullable|integer',
+        'nombre'             => 'required|string|max:150',
+        'descripcion_corta'  => 'nullable|string|max:255',
         'medida'             => 'nullable|string|max:50',
         'anio'               => 'required|integer',
         'precio'             => 'required|numeric',
@@ -126,6 +130,7 @@ public function store(Request $request)
             'camion'     => $camion,
             'marcas'     => Marca::orderBy('nombre')->get(),
             'categorias' => Categoria::orderBy('nombre')->get(),
+            'modelos'    => Modelo::orderBy('nombre')->get(),
         ]);
     }
 
@@ -135,6 +140,8 @@ public function update(Request $request, Camiones $camion)
         'categoria_id'       => 'required|integer',
         'marca_id'           => 'required|integer',
         'modelo_id'          => 'nullable|integer',
+        'nombre'             => 'required|string|max:150',
+        'descripcion_corta'  => 'nullable|string|max:255',
         'medida'             => 'nullable|string|max:50',
         'anio'               => 'required|integer',
         'precio'             => 'required|numeric',
