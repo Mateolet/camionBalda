@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\ClienteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MarcaController;
 use App\Http\Controllers\Api\ModelosController;
-use App\Http\Controllers\Api\ContactoController;
+use App\Http\Controllers\Api\ReferenciasController;
 
 
 Route::apiResource('clientes', ClienteController::class);
@@ -19,4 +19,5 @@ Route::apiResource('camiones', CamionesController::class);
 
 Route::apiResource('categorias', CategoriasController::class);
 
-Route::post('contacto', [ContactoController::class, 'store']);
+Route::get('referencias', [ReferenciasController::class, 'index']);
+Route::get('referencias/{referencia}', [ReferenciasController::class, 'show']);

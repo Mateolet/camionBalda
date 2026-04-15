@@ -12,6 +12,7 @@
                        class="form-control"
                        placeholder="Ej: Volvo"
                        value="{{ old('nombre', $marca->nombre ?? '') }}"
+                       maxlength="255"
                        required>
             </div>
         </div>

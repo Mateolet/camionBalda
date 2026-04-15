@@ -6,7 +6,7 @@
 
         <div class="mb-3">
             <label class="form-label">Marca</label>
-            <select name="marca_id" class="form-select">
+            <select name="marca_id" class="form-select" required>
                 @foreach($marcas as $marca)
                     <option value="{{ $marca->id }}"
                         @selected(old('marca_id', $modelo->marca_id ?? '') == $marca->id)>
@@ -19,6 +19,8 @@
         <div class="mb-3">
             <label class="form-label">Nombre</label>
             <input name="nombre" class="form-control"
+                   maxlength="255"
+                   required
                    value="{{ old('nombre', $modelo->nombre ?? '') }}">
         </div>
     </div>

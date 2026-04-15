@@ -21,6 +21,8 @@
                        name="orden"
                        class="form-control"
                        placeholder="Ej: 1"
+                       min="0"
+                       step="1"
                        value="{{ old('orden', $categoria->orden ?? '') }}">
             </div>
 

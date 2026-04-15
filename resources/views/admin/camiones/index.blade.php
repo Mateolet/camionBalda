@@ -18,7 +18,7 @@
 <div class="card">
     <div class="card-body border-bottom">
         <div class="row g-2 align-items-end">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6">
                 <label class="form-label mb-1">Marca</label>
                 <select id="filtro-marca" class="form-select">
                     <option value="">Todas</option>
@@ -29,7 +29,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6">
                 <label class="form-label mb-1">Categoria</label>
                 <select id="filtro-categoria" class="form-select">
                     <option value="">Todas</option>
@@ -40,10 +40,6 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-12 col-md-4">
-                <label class="form-label mb-1">Nombre</label>
-                <input type="text" id="filtro-nombre" class="form-control" placeholder="Nombre del camion">
-            </div>
         </div>
     </div>
     <div class="card-body p-0">
@@ -52,7 +48,6 @@
                 <tr>
                     <th>ID</th>
                     <th>Marca</th>
-                    <th>Nombre</th>
                     <th>Modelo</th>
                     <th>Imagenes</th>
                     <th>Año</th>
@@ -63,12 +58,10 @@
             </thead>
             <tbody>
                 @forelse($camiones as $camion)
-                    <tr data-nombre="{{ $camion->nombre ?? '' }}"
-                        data-marca="{{ $camion->marca->nombre ?? '' }}"
+                    <tr data-marca="{{ $camion->marca->nombre ?? '' }}"
                         data-categoria="{{ $camion->categoria->nombre ?? '' }}">
                     <td class="fw-bold">#{{ $camion->id }}</td>
                     <td>{{ $camion->marca->nombre ?? '-' }}</td>
-                    <td>{{ $camion->nombre ?? '-' }}</td>
                     <td>{{ $camion->modelo->nombre ?? '-' }}</td>
                     <td>
                         @forelse($camion->imagenes->take(3) as $imagen)
@@ -110,7 +103,7 @@
                 </tr>
                 @empty
                     <tr>
-                        <td colspan="9" class="text-center text-muted py-4">
+                        <td colspan="8" class="text-center text-muted py-4">
                             Sin resultados
                         </td>
                     </tr>
@@ -128,10 +121,6 @@
                     </div>
                     <div class="modal-body">
                         <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="small text-muted">Nombre</div>
-                                <div class="fw-semibold">{{ $camion->nombre ?? '-' }}</div>
-                            </div>
                             <div class="col-md-6">
                                 <div class="small text-muted">Categoria</div>
                                 <div class="fw-semibold">{{ $camion->categoria->nombre ?? '-' }}</div>
@@ -215,10 +204,6 @@
                                 <div class="fw-semibold">{{ $camion->capacidad_tanque ?? '-' }}</div>
                             </div>
                             <div class="col-12">
-                                <div class="small text-muted">Descripcion corta</div>
-                                <div class="fw-semibold">{{ $camion->descripcion_corta ?? '-' }}</div>
-                            </div>
-                            <div class="col-12">
                                 <div class="small text-muted">Descripcion</div>
                                 <div class="fw-semibold">{{ $camion->descripcion ?? '-' }}</div>
                             </div>
@@ -239,7 +224,6 @@
 
 <script>
     (function () {
-        const filtroNombre = document.getElementById('filtro-nombre');
         const filtroMarca = document.getElementById('filtro-marca');
         const filtroCategoria = document.getElementById('filtro-categoria');
         const filas = Array.from(document.querySelectorAll('tbody tr'));
@@ -249,28 +233,24 @@
         }
 
         function aplicarFiltros() {
-            const nombre = normalize(filtroNombre.value);
             const marca = normalize(filtroMarca.value);
             const categoria = normalize(filtroCategoria.value);
 
             filas.forEach((fila) => {
-                if (!fila.dataset.nombre && !fila.dataset.marca && !fila.dataset.categoria) {
+                if (!fila.dataset.marca && !fila.dataset.categoria) {
                     return;
                 }
 
-                const rowNombre = normalize(fila.dataset.nombre);
                 const rowMarca = normalize(fila.dataset.marca);
                 const rowCategoria = normalize(fila.dataset.categoria);
 
-                const matchNombre = !nombre || rowNombre.includes(nombre);
                 const matchMarca = !marca || rowMarca === marca;
                 const matchCategoria = !categoria || rowCategoria === categoria;
 
-                fila.style.display = matchNombre && matchMarca && matchCategoria ? '' : 'none';
+                fila.style.display = matchMarca && matchCategoria ? '' : 'none';
             });
         }
 
-        filtroNombre.addEventListener('input', aplicarFiltros);
         filtroMarca.addEventListener('change', aplicarFiltros);
         filtroCategoria.addEventListener('change', aplicarFiltros);
     })();

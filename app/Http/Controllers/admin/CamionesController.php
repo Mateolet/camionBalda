@@ -17,10 +17,6 @@ class CamionesController extends Controller
         $query = Camiones::with(['marca','categoria','modelo','imagenes'])
             ->orderByDesc('id');
 
-        if ($request->filled('nombre')) {
-            $query->where('nombre', 'like', '%' . $request->input('nombre') . '%');
-        }
-
         if ($request->filled('marca_id')) {
             $query->where('marca_id', $request->integer('marca_id'));
         }
@@ -53,8 +49,6 @@ public function store(Request $request)
         'categoria_id'       => 'required|integer',
         'marca_id'           => 'required|integer',
         'modelo_id'          => 'nullable|integer',
-        'nombre'             => 'required|string|max:150',
-        'descripcion_corta'  => 'nullable|string|max:255',
         'medida'             => 'nullable|string|max:50',
         'anio'               => 'required|integer',
         'precio'             => 'required|numeric',
@@ -140,8 +134,6 @@ public function update(Request $request, Camiones $camion)
         'categoria_id'       => 'required|integer',
         'marca_id'           => 'required|integer',
         'modelo_id'          => 'nullable|integer',
-        'nombre'             => 'required|string|max:150',
-        'descripcion_corta'  => 'nullable|string|max:255',
         'medida'             => 'nullable|string|max:50',
         'anio'               => 'required|integer',
         'precio'             => 'required|numeric',

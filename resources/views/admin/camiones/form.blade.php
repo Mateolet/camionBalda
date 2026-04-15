@@ -9,7 +9,7 @@
 {{-- CATEGORIA / MARCA / MODELO --}}
 <div class="col-md-4">
     <label class="form-label">Categoría</label>
-    <select name="categoria_id" class="form-select">
+    <select name="categoria_id" class="form-select" required>
         @foreach($categorias as $c)
             <option value="{{ $c->id }}"
                 @selected(old('categoria_id', $camion->categoria_id ?? '') == $c->id)>
@@ -21,7 +21,7 @@
 
 <div class="col-md-4">
     <label class="form-label">Marca</label>
-    <select name="marca_id" class="form-select">
+    <select name="marca_id" class="form-select" required>
         @foreach($marcas as $m)
             <option value="{{ $m->id }}"
                 @selected(old('marca_id', $camion->marca_id ?? '') == $m->id)>
@@ -42,39 +42,38 @@
     </select>
 </div>
 
-<div class="col-md-8">
-    <label class="form-label">Nombre</label>
-    <input name="nombre" class="form-control"
-           value="{{ old('nombre', $camion->nombre ?? '') }}">
-</div>
-
-<div class="col-md-12">
-    <label class="form-label">Descripcion corta</label>
-    <input name="descripcion_corta" class="form-control"
-           value="{{ old('descripcion_corta', $camion->descripcion_corta ?? '') }}">
-</div>
 {{-- MEDIDA / AÑO / PRECIO --}}
 <div class="col-md-3">
     <label class="form-label">Medida</label>
     <input name="medida" class="form-control"
+           maxlength="50"
            value="{{ old('medida', $camion->medida ?? '') }}">
 </div>
 
 <div class="col-md-3">
     <label class="form-label">Año</label>
     <input type="number" name="anio" class="form-control"
+           min="1900"
+           max="2100"
+           step="1"
+           required
            value="{{ old('anio', $camion->anio ?? '') }}">
 </div>
 
 <div class="col-md-3">
     <label class="form-label">Precio</label>
     <input type="number" name="precio" class="form-control"
+           min="0"
+           step="0.01"
+           required
            value="{{ old('precio', $camion->precio ?? '') }}">
 </div>
 
 <div class="col-md-3">
     <label class="form-label">Kilómetros</label>
     <input type="number" name="kilometros" class="form-control"
+           min="0"
+           step="1"
            value="{{ old('kilometros', $camion->kilometros ?? '') }}">
 </div>
 
@@ -82,18 +81,21 @@
 <div class="col-md-4">
     <label class="form-label">Combustible</label>
     <input name="combustible" class="form-control"
+           maxlength="50"
            value="{{ old('combustible', $camion->combustible ?? '') }}">
 </div>
 
 <div class="col-md-4">
     <label class="form-label">Transmisión</label>
     <input name="transmision" class="form-control"
+           maxlength="50"
            value="{{ old('transmision', $camion->transmision ?? '') }}">
 </div>
 
 <div class="col-md-4">
     <label class="form-label">Motor</label>
     <input name="motor" class="form-control"
+           maxlength="100"
            value="{{ old('motor', $camion->motor ?? '') }}">
 </div>
 
@@ -107,7 +109,7 @@
 
 <div class="col-md-12">
     <label class="form-label">Imagenes</label>
-    <input type="file" name="imagenes[]" class="form-control" multiple accept="image/*">
+    <input type="file" name="imagenes[]" class="form-control" multiple accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
     <input type="hidden" name="imagen_principal_index" id="imagen-principal-index">
     <div class="mt-2 d-none" id="imagenes-nuevas-wrap">
         <div class="small text-muted mb-1">Elegi la imagen principal de las nuevas</div>
@@ -137,7 +139,7 @@
 {{-- ESTADO --}}
 <div class="col-md-3">
     <label class="form-label">Estado</label>
-    <select name="estado" class="form-select">
+    <select name="estado" class="form-select" required>
         <option value="publicado" @selected(old('estado', $camion->estado ?? '') == 'publicado')>Publicado</option>
         <option value="borrador" @selected(old('estado', $camion->estado ?? '') == 'borrador')>Borrador</option>
     </select>
