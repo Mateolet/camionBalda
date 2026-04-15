@@ -42,6 +42,14 @@
     </select>
 </div>
 
+<div class="col-md-12">
+    <label class="form-label">Nombre</label>
+    <input name="nombre" class="form-control"
+           maxlength="150"
+           required
+           value="{{ old('nombre', $camion->nombre ?? '') }}">
+</div>
+
 {{-- MEDIDA / AÑO / PRECIO --}}
 <div class="col-md-3">
     <label class="form-label">Medida</label>

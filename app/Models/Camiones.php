@@ -12,6 +12,7 @@ class Camiones extends Model
         'categoria_id',
         'marca_id',
         'modelo_id',
+        'nombre',
         'medida',
         'anio',
         'precio',
